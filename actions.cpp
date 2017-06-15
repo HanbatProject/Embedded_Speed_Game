@@ -3,6 +3,7 @@
 #include "functions.h"
 #include "state.h"
 #include "text.h"
+extern char buf1[17], buf2[17];
 
 void state_change()
 {
@@ -41,18 +42,27 @@ void state_change()
 }
 void text_change()
 {
+    int i;
     switch(CURRENT_STATE)
     {
         // 게임 시작 상태
         case 0:
             buf1 = GAME_START_LINE1;
             buf2 = GAME_START_LINE2;
+            break;
         case 1:
-            // 지우기 눌렀을 때
-            if(button == 0000000000001000)
+            char blank[TEXTLCD_LENGTH] = "  ";
+            for(i = 3 ; i > 0 ; i--)
             {
-                CURRENT_STATE = 0;
+                strcat(blank, (char *)&i);
+                buf1 = blank;
+                usleep(500 * 1000);
+                blank = "  ";
             }
+            buf1 = START_LINE1;
+            usleep(1000 * 1000);
+            CURRENT_STATE = 2;
+
             break;
             // 게임 진행 상태
         case 2:
@@ -67,12 +77,14 @@ void text_change()
             }
             break;
         default:
-            CURRENT_STATE = 0;
+            buf1 = "";
+            buf2 = "";
     }
 }
-void score_change();
+void score_change()
+{
+
+}
 void time_change();
 void next_question();
 void is_highscore();
-
-void
