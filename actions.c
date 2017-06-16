@@ -3,6 +3,8 @@
 #include "functions.h"
 #include "state.h"
 #include "text.h"
+extern char buf1[TEXTLCD_LENGTH], buf2[TEXTLCD_LENGTH];
+extern unsigned short button;
 
 void state_change(pthread_mutex_t current_state_mutex)
 {

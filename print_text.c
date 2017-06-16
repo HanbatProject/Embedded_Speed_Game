@@ -1,6 +1,8 @@
 #include "external_includes.h"
 #include "functions.h"
 #include "machine.h"
+extern unsigned short *addr_fpga;
+extern char buf1[TEXTLCD_LENGTH], buf2[TEXTLCD_LENGTH];
 
 void make_line(int line_bit, char* buf);
 void setcommand(unsigned short command);

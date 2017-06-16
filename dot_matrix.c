@@ -2,7 +2,8 @@
 #include "machine.h"
 #include "functions.h"
 #include "state.h"
-#include "thread_functions.h"
+extern unsigned short *addr_fpga;
+extern int ten_number, one_number;
 
 #define NUMSIZE 4
 

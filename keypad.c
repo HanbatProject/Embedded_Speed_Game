@@ -1,7 +1,8 @@
 #include "external_includes.h"
 #include "machine.h"
 #include "functions.h"
-#include "thread_functions.h"
+extern unsigned short *addr_fpga;
+extern unsigned short button;
 
 unsigned short *keypad_row_addr, *keypad_col_addr;
 unsigned short keypad_change(unsigned short row);
