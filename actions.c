@@ -5,18 +5,18 @@
 #include "text.h"
 extern char buf1[TEXTLCD_LENGTH], buf2[TEXTLCD_LENGTH];
 extern unsigned short button;
-extern int CURRENT_STATE;
+extern int current_state;
 
 void state_change(pthread_mutex_t current_state_mutex)
 {
     while(1) {
         pthread_mutex_lock(&current_state_mutex);
-        switch (CURRENT_STATE) {
+        switch (current_state) {
             // 게임 시작 상태
             case 0:
                 if (button > 0x00)
                 {
-                    CURRENT_STATE = 1;
+                    current_state = 1;
                 }
                 break;
                 // 게임 준비 상태
@@ -24,7 +24,7 @@ void state_change(pthread_mutex_t current_state_mutex)
                 // 지우기 눌렀을 때
                 if (button == 0000000000001000)
                 {
-                    CURRENT_STATE = 0;
+                    current_state = 0;
                 }
                 break;
                 // 게임 진행 상태
@@ -36,11 +36,11 @@ void state_change(pthread_mutex_t current_state_mutex)
             case 3:
                 if (button > 0x00)
                 {
-                    CURRENT_STATE = 0;
+                    current_state = 0;
                 }
                 break;
             default:
-                CURRENT_STATE = 0;
+                current_state = 0;
         }
         pthread_mutex_unlock(&current_state_mutex);
     }
@@ -51,7 +51,7 @@ void text_change(pthread_mutex_t current_state_mutex)
     char blank[TEXTLCD_LENGTH] = "  ";
     while(1) {
         pthread_mutex_lock(&current_state_mutex);
-        switch (CURRENT_STATE) {
+        switch (current_state) {
             // 게임 시작 상태
             case 0:
                 strcpy(buf1, GAME_START_LINE1);
@@ -67,7 +67,7 @@ void text_change(pthread_mutex_t current_state_mutex)
                 }
                 strcpy(buf1, START_LINE1);
                 usleep(1000 * 1000);
-                CURRENT_STATE = 2;
+                current_state = 2;
 
                 break;
                 // 게임 진행 상태
@@ -78,7 +78,7 @@ void text_change(pthread_mutex_t current_state_mutex)
                 // 게임 오버 상태
             case 3:
                 if (button > 0x00) {
-                    CURRENT_STATE = 0;
+                    current_state = 0;
                 }
                 break;
             default:

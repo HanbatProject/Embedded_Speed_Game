@@ -4,7 +4,7 @@
 #include "state.h"
 extern unsigned short *addr_fpga;
 extern int ten_number, one_number;
-extern int CURRENT_STATE;
+extern int current_state;
 
 #define NUMSIZE 4
 
@@ -36,7 +36,7 @@ void dot_matrix(pthread_mutex_t dot_matrix_mutex)
 	}
 	while(1)
 	{
-		if (CURRENT_STATE == 2)
+		if (current_state == 2)
 		{
 			dot_dirty = 1;
 			pthread_mutex_lock(&dot_matrix_mutex);
