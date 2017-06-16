@@ -2,9 +2,9 @@
 #define FUNCTIONS_H
 
 // 기계 쓰레드 함수들
-void print_text(int fd);
-void dot_matrix(int fd);
-void keypad(int fd);
+void print_text();
+void dot_matrix();
+void keypad();
 
 // 상태에 따른 변수 변경 함수들
 void state_change();

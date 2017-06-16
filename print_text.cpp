@@ -1,11 +1,12 @@
 #include "external_includes.h"
 #include "functions.h"
 #include "machine.h"
+#include "thread_functions.h"
 
 void make_line(int line_bit, char* buf);
 void setcommand(unsigned short command);
 void writebyte(char ch);
-void initialize_textlcd(int fd);
+void initialize_textlcd();
 int function_set(int rows, int nfonts);
 int display_control(int display_enable, int cursor_enable, int nblink);
 int cursor_shift(int set_screen, int set_rightshift);
@@ -14,7 +15,9 @@ int return_home();
 int clear_display();
 int set_ddram_address(int pos);
 
-void print_text(int fd)
+unsigned short *pTextlcd;
+
+void print_text()
 {
 	pTextlcd = addr_fpga + TEXTLCD_OFFSET / sizeof(unsigned short);
 
@@ -24,11 +27,15 @@ void print_text(int fd)
 		return;
 	}
 
-	initialize_textlcd(fd);
+	initialize_textlcd();
 	while (1){
+        pthread_mutex_lock(&PRINT_TEXT_MUTEX);
+
 		make_line(0, buf1);
 		make_line(64, buf2);
-		usleep(1000);
+
+        pthread_mutex_unlock(&PRINT_TEXT_MUTEX);
+        usleep(1000);
 	}
 	return;
 }
@@ -72,7 +79,7 @@ void writebyte(char ch)
 	usleep(1000);
 }
 
-void initialize_textlcd(int fd)
+void initialize_textlcd()
 {
 	function_set(2, 0); //Function Set:8bit, display 2lines, 5x7 mode
 	display_control(1, 1, 0); //Display on, Cursor on

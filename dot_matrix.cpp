@@ -2,10 +2,9 @@
 #include "machine.h"
 #include "functions.h"
 #include "state.h"
+#include "thread_functions.h"
 
 #define NUMSIZE 4
-
-void get_number(int prev_number)
 
 unsigned short font_num[40] = {
 	0x7f, 0x41, 0x41, 0x7f,		// 0
@@ -20,25 +19,25 @@ unsigned short font_num[40] = {
 	0x4f, 0x49, 0x49, 0x7f,   	// 9		
 };
 
-void dot_matrix(int fd)
+void dot_matrix()
 {
-	int dot_dirty = 1;
-	int number[2] = { 0, 0 };
+	int i, dot_dirty = 1;
+
+	unsigned short *dot_row_addr, *dot_col_addr;
 	dot_row_addr = addr_fpga + DOT_ROW_OFFSET / sizeof(unsigned short);
 	dot_col_addr = addr_fpga + DOT_COL_OFFSET / sizeof(unsigned short);
 
 	if (*dot_row_addr == (unsigned short)-1 || *dot_col_addr == (unsigned short)-1)
 	{
 		printf("dot_row mmap failed\n");
-		return 0;
+		return;
 	}
 	while(true)
 	{
 		if (CURRENT_STATE == 2)
 		{
 			dot_dirty = 1;
-			
-			number = get_number()
+			pthread_mutex_lock(&DOT_MATRIX_MUTEX);
 
 			for (i = 0; i < 4; i++)
 			{
@@ -50,18 +49,21 @@ void dot_matrix(int fd)
 				*dot_row_addr = 5 << i;
 				*dot_col_addr = 0x8000 | font_num[one_number*NUMSIZE + i];
 			}
+			pthread_mutex_unlock(&DOT_MATRIX_MUTEX);
 			usleep(1000 * 1000);
 		}
 		else
 		{
 			if (dot_dirty)
 			{
+				pthread_mutex_lock(&DOT_MATRIX_MUTEX);
 				for (i = 0; i < 8; i++)
 				{
 					*dot_row_addr = 1 << i;
 					*dot_col_addr = 0x00;
 				}
 				dot_dirty = 0;
+				pthread_mutex_unlock(&DOT_MATRIX_MUTEX);
 			}
 		}
 	}
