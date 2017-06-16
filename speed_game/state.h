@@ -7,7 +7,15 @@ int current_state;
 #define STATE_GAME 2
 #define STATE_GAME_OVER 3
 
+int play_game;
+#define NOT_PLAY_GAME 0
+#define PLAY_GAME 1
+
+int question_count;
 int high_score, game_score, combo;
+char formula[10];
+int answer, answer_input;
+
 
 int is_correct;
 #define ANS_NOTHING 0
