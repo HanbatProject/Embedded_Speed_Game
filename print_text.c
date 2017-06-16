@@ -38,7 +38,7 @@ void print_text(pthread_mutex_t print_text_mutex)
 		make_line(64, buf2);
 
         pthread_mutex_unlock(&print_text_mutex);
-        usleep(1000);
+        usleep(100);
 	}
 	return;
 }
@@ -51,13 +51,13 @@ void make_line(int line_bit, char* buf)
 #ifdef LINE_TEST
 	if(line_bit == 0) printf("\nLINE 1 : ");
 	else printf("\nLINE 2 : ");
+#endif
 	for (i = 0; i < TEXTLCD_LENGTH; i++)
 	{
 		printf("%c", buf[i]);
 		writebyte(buf[i]);
 	}
 	printf("\n");
-#endif
 }
 
 void setcommand(unsigned short command)
