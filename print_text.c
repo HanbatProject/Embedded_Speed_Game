@@ -47,17 +47,16 @@ void make_line(int line_bit, char* buf)
 {
 	int i;
 	set_ddram_address(line_bit);
-
+	for (i = 0; i < TEXTLCD_LENGTH; i++)
+		writebyte(buf[i]);
 #ifdef LINE_TEST
 	if(line_bit == 0) printf("\nLINE 1 : ");
 	else printf("\nLINE 2 : ");
-#endif
+
 	for (i = 0; i < TEXTLCD_LENGTH; i++)
-	{
 		printf("%c", buf[i]);
-		writebyte(buf[i]);
-	}
 	printf("\n");
+#endif
 }
 
 void setcommand(unsigned short command)
@@ -87,7 +86,7 @@ void writebyte(char ch)
 void initialize_textlcd()
 {
 	function_set(2, 0); //Function Set:8bit, display 2lines, 5x7 mode
-	display_control(1, 1, 0); //Display on, Cursor on
+	display_control(1, 0, 0); //Display on, Cursor off
 	clear_display(); //Display clear
 	//entry_mode_set(1, 0); //Entry Mode Set:Shift right cursor
 	//return_home(); //go home

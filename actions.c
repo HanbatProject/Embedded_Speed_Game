@@ -46,9 +46,11 @@ void state_change(pthread_mutex_t current_state_mutex)
         pthread_mutex_unlock(&current_state_mutex);
     }
 }
+
 void text_change(pthread_mutex_t current_state_mutex)
 {
     int i;
+    char blank[TEXTLCD_LENGTH] = "                 ";
     char temp[TEXTLCD_LENGTH];
     while(1) {
         pthread_mutex_lock(&current_state_mutex);
@@ -59,6 +61,7 @@ void text_change(pthread_mutex_t current_state_mutex)
                 strcpy(buf2, GAME_START_LINE2);
                 break;
             case 1:
+                strcpy(buf2, blank);
                 for (i = 3; i > 0; i--)
                 {
                     strcpy(temp, "        ");
@@ -86,6 +89,8 @@ void text_change(pthread_mutex_t current_state_mutex)
                 break;
                 // 게임 진행 상태
             case 2:
+                strcpy(buf1, GAME_LINE1);
+                strcpy(buf2, GAME_LINE2);
                 // if(시간이 다됨)
                 // 꺼짐
                 break;
@@ -96,24 +101,46 @@ void text_change(pthread_mutex_t current_state_mutex)
                 }
                 break;
             default:
-                strcpy(buf1, "");
-                strcpy(buf2, "");
+                strcpy(buf1, blank);
+                strcpy(buf2, blank);
         }
         pthread_mutex_unlock(&current_state_mutex);
     }
 }
 void score_change(pthread_mutex_t print_text_mutex)
 {
-    int score;
-    if (current_state == 2)
+    while(1)
     {
-        pthread_mutex_lock(&print_text_mutex);
-        score = ten_number*10 + one_number;
-        score = score - 1;
+        if (current_state == 2)
+        {
+            pthread_mutex_lock(&print_text_mutex);
 
-        pthread_mutex_lock(&print_text_mutex);
+            pthread_mutex_lock(&print_text_mutex);
+        }
     }
 }
-void time_change();
-void next_question();
+void time_change(pthread_mutex_t dot_matrix_mutex)
+{
+    int time;
+    while(1)
+    {
+        if (current_state == 2)
+        {
+            pthread_mutex_lock(&dot_matrix_mutex);
+            time = ten_number * 10 + one_number;
+//            if( 틀렸으면)
+//                time = time - 3;
+
+            time = time - 1;
+            ten_number = time / 10;
+            one_number = time % 10;
+
+            pthread_mutex_unlock(&dot_matrix_mutex);
+        }
+    }
+}
+void next_question()
+{
+
+}
 void is_highscore();

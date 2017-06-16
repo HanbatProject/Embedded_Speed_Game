@@ -6,8 +6,8 @@
 
 #define START_LINE1 "   START!        "
 
-#define GAME_LINE1 "%s = %s"
-#define GAME_LINE2 "SCORE : %s"
+#define GAME_LINE1 "          =      "
+#define GAME_LINE2 "SCORE :          "
 
 #define GAME_OVER_LINE1 "  GAME OVER!"
 #define GAME_OVER_LINE2 "  SCORE : %s"

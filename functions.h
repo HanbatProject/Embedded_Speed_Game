@@ -11,8 +11,8 @@ void keypad(pthread_mutex_t);
 // 상태에 따른 변수 변경 함수들
 void state_change(pthread_mutex_t);
 void text_change(pthread_mutex_t);
-void score_change();
-void time_change();
+void score_change(pthread_mutex_t);
+void time_change(pthread_mutex_t;
 void next_question();
 void is_highscore();
 
