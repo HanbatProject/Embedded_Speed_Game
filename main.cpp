@@ -43,7 +43,7 @@ int main()
 	pthread_join(dot_matrix_t, NULL);
 
 	// 동작 쓰레드
-	pthread_join(change_text_t, NULL);
+	pthread_join(text_change_t, NULL);
 	//pthread_join(formula_t, NULL);
 
 	unset_memory(fd);
