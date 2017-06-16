@@ -62,7 +62,18 @@ void text_change(pthread_mutex_t current_state_mutex)
                 for (i = 3; i > 0; i--)
                 {
                     strcpy(temp, "        ");
-                    strcat(temp, (char *) i);
+                    if(i==3)
+                    {
+                        strcat(temp, "3");
+                    }
+                    else if(i==2)
+                    {
+                        strcat(temp, "2");
+                    }
+                    else
+                    {
+                        strcat(temp, "1");
+                    }
                     strcat(temp, "        ");
 
                     strcpy(buf1, temp);
