@@ -1,7 +1,6 @@
 #include "external_includes.h"
 #include "functions.h"
 #include "machine.h"
-#include "thread_functions.h"
 
 void make_line(int line_bit, char* buf);
 void setcommand(unsigned short command);
@@ -17,7 +16,7 @@ int set_ddram_address(int pos);
 
 unsigned short *pTextlcd;
 
-void print_text()
+void print_text(pthread_mutex_t print_text_mutex)
 {
 	pTextlcd = addr_fpga + TEXTLCD_OFFSET / sizeof(unsigned short);
 
@@ -29,12 +28,12 @@ void print_text()
 
 	initialize_textlcd();
 	while (1){
-        pthread_mutex_lock(&PRINT_TEXT_MUTEX);
+        pthread_mutex_lock(&print_text_mutex);
 
 		make_line(0, buf1);
 		make_line(64, buf2);
 
-        pthread_mutex_unlock(&PRINT_TEXT_MUTEX);
+        pthread_mutex_unlock(&print_text_mutex);
         usleep(1000);
 	}
 	return;

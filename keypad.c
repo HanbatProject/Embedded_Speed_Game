@@ -8,7 +8,7 @@ unsigned short keypad_change(unsigned short row);
 
 // #define BINARY_CODE
 
-void keypad()
+void keypad(pthread_mutex_t keypad_mutex)
 {
 	keypad_col_addr = addr_fpga + KEY_COL_OFFSET / sizeof(unsigned short);
 	keypad_row_addr = addr_fpga + KEY_ROW_OFFSET / sizeof(unsigned short);
@@ -20,9 +20,9 @@ void keypad()
 	}
 
     *keypad_row_addr = 0x00;
-	while (true)
+	while (1)
 	{
-        pthread_mutex_lock(&BUTTON_MUTEX);
+        pthread_mutex_lock(&keypad_mutex);
 
         button = keypad_change(0x01);
 		button |= keypad_change(0x02) << 4;
@@ -38,7 +38,7 @@ void keypad()
 		printf("\n");
 #endif
 		usleep(1000);
-        pthread_mutex_unlock(&BUTTON_MUTEX);
+        pthread_mutex_unlock(&keypad_mutex);
 
         *keypad_row_addr = 0x00;
     }

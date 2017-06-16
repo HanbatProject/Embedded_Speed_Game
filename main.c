@@ -3,6 +3,13 @@
 #include "machine.h"
 #include "thread_functions.h"
 
+pthread_mutex_t PRINT_TEXT_MUTEX;
+pthread_mutex_t KEYPAD_MUTEX;
+pthread_mutex_t DOT_MATRIX_MUTEX;
+
+pthread_mutex_t CURRENT_STATE_MUTEX;
+pthread_mutex_t BUTTON_MUTEX;
+
 void unset_memory(int fd);
 
 int main()
@@ -54,27 +61,27 @@ int main()
 void *print_text_thread(void *arg)
 {
 	printf("print_text_thread start!");
-	print_text();
+	print_text(PRINT_TEXT_MUTEX);
 }
 void *keypad_thread(void *arg)
 {
     printf("keypad_thread start!");
-	keypad();
+	keypad(KEYPAD_MUTEX);
 }
 void *dot_matrix_thread(void *arg)
 {
     printf("dot_matrix_thread start!");
-	dot_matrix();
+	dot_matrix(DOT_MATRIX_MUTEX);
 }
 
 // 동작 콜백 함수
 void *state_change_thread(void *arg)
 {
-    state_change();
+    state_change(CURRENT_STATE_MUTEX);
 }
 void *text_change_thread(void *arg)
 {
-    text_change();
+    text_change(PRINT_TEXT_MUTEX);
 }
 void *formula_thread(void *arg)
 {

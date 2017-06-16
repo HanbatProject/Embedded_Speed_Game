@@ -19,7 +19,7 @@ unsigned short font_num[40] = {
 	0x4f, 0x49, 0x49, 0x7f,   	// 9		
 };
 
-void dot_matrix()
+void dot_matrix(pthread_mutex_t dot_matrix_mutex)
 {
 	int i, dot_dirty = 1;
 
@@ -32,12 +32,12 @@ void dot_matrix()
 		printf("dot_row mmap failed\n");
 		return;
 	}
-	while(true)
+	while(1)
 	{
 		if (CURRENT_STATE == 2)
 		{
 			dot_dirty = 1;
-			pthread_mutex_lock(&DOT_MATRIX_MUTEX);
+			pthread_mutex_lock(&dot_matrix_mutex);
 
 			for (i = 0; i < 4; i++)
 			{
@@ -49,24 +49,23 @@ void dot_matrix()
 				*dot_row_addr = 5 << i;
 				*dot_col_addr = 0x8000 | font_num[one_number*NUMSIZE + i];
 			}
-			pthread_mutex_unlock(&DOT_MATRIX_MUTEX);
+			pthread_mutex_unlock(&dot_matrix_mutex);
 			usleep(1000 * 1000);
 		}
 		else
 		{
 			if (dot_dirty)
 			{
-				pthread_mutex_lock(&DOT_MATRIX_MUTEX);
+				pthread_mutex_lock(&dot_matrix_mutex);
 				for (i = 0; i < 8; i++)
 				{
 					*dot_row_addr = 1 << i;
 					*dot_col_addr = 0x00;
 				}
 				dot_dirty = 0;
-				pthread_mutex_unlock(&DOT_MATRIX_MUTEX);
+				pthread_mutex_unlock(&dot_matrix_mutex);
 			}
 		}
 	}
-
 	return;
 }

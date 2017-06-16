@@ -3,12 +3,11 @@
 #include "functions.h"
 #include "state.h"
 #include "text.h"
-#include "thread_functions.h"
 
-void state_change()
+void state_change(pthread_mutex_t current_state_mutex)
 {
     while(1) {
-        pthread_mutex_lock(&CURRENT_STATE_MUTEX);
+        pthread_mutex_lock(&current_state_mutex);
         switch (CURRENT_STATE) {
             // 게임 시작 상태
             case 0:
@@ -40,30 +39,30 @@ void state_change()
             default:
                 CURRENT_STATE = 0;
         }
-        pthread_mutex_unlock(&CURRENT_STATE_MUTEX);
+        pthread_mutex_unlock(&current_state_mutex);
     }
 }
-void text_change()
+void text_change(pthread_mutex_t current_state_mutex)
 {
     int i;
+    char blank[TEXTLCD_LENGTH] = "  ";
     while(1) {
-        pthread_mutex_lock(&CURRENT_STATE_MUTEX);
+        pthread_mutex_lock(&current_state_mutex);
         switch (CURRENT_STATE) {
             // 게임 시작 상태
             case 0:
-                buf1 = GAME_START_LINE1;
-                buf2 = GAME_START_LINE2;
+                strcpy(buf1, GAME_START_LINE1);
+                strcpy(buf2, GAME_START_LINE2);
                 break;
             case 1:
-                char blank[TEXTLCD_LENGTH] = "  ";
                 for (i = 3; i > 0; i--)
                 {
                     strcat(blank, (char *) &i);
-                    buf1 = blank;
+                    strcpy(buf1, blank);
                     usleep(500 * 1000);
-                    blank = "  ";
+                    strcpy(blank, "  ");
                 }
-                buf1 = START_LINE1;
+                strcpy(buf1, START_LINE1);
                 usleep(1000 * 1000);
                 CURRENT_STATE = 2;
 
@@ -80,10 +79,10 @@ void text_change()
                 }
                 break;
             default:
-                buf1 = "";
-                buf2 = "";
+                strcpy(buf1, "");
+                strcpy(buf2, "");
         }
-        pthread_mutex_unlock(&CURRENT_STATE_MUTEX);
+        pthread_mutex_unlock(&current_state_mutex);
     }
 }
 void score_change()
