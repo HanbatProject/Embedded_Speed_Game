@@ -4,6 +4,7 @@
 #include "state.h"
 extern unsigned short *addr_fpga;
 extern int ten_number, one_number;
+extern int CURRENT_STATE;
 
 #define NUMSIZE 4
 
