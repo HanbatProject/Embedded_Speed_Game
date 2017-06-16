@@ -1,6 +1,6 @@
 #ifndef STATE_H
 #define STATE_H
 
-int current_state = 0;
+int current_state;
 
 #endif // !STATE_H
