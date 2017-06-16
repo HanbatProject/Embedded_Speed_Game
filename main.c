@@ -3,6 +3,7 @@
 #include "machine.h"
 #include "thread_functions.h"
 extern unsigned short *addr_fpga;
+extern int CURRENT_STATE;
 
 pthread_mutex_t PRINT_TEXT_MUTEX;
 pthread_mutex_t KEYPAD_MUTEX;
