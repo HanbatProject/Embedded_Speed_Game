@@ -17,7 +17,7 @@ int main()
 {
 	int fd;
 	pthread_t print_text_t, keypad_t, dot_matrix_t, formula_t;
-	pthread_t state_change_t, text_change_t;
+	pthread_t state_change_t, text_change_t, score_change_t, time_change_t;
 
 	if ((fd = open(MEMORY_PATH, O_RDWR | O_SYNC)) < 0)
 	{
@@ -42,6 +42,8 @@ int main()
 	// 동작 쓰레드
     pthread_create(&state_change_t, NULL, state_change_thread, NULL);
 	pthread_create(&text_change_t, NULL, text_change_thread, NULL);
+	pthread_create(&score_change_t, NULL, score_change_thread, NULL);
+	pthread_create(&time_change_t, NULL, time_change_thread, NULL);
 	//pthread_create(&formula_t, NULL, formula_thread, NULL);
 
 
@@ -83,6 +85,14 @@ void *state_change_thread(void *arg)
 void *text_change_thread(void *arg)
 {
     text_change(PRINT_TEXT_MUTEX);
+}
+void *score_change_thread(void *arg)
+{
+	when_score_change(PRINT_TEXT_MUTEX);
+}
+void *time_change_thread(void *arg)
+{
+	time_change(DOT_MATRIX_MUTEX);
 }
 void *formula_thread(void *arg)
 {
