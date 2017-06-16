@@ -30,14 +30,14 @@ void keypad(pthread_mutex_t keypad_mutex)
         button |= keypad_change(0x04) << 8;
         button |= keypad_change(0x08) << 12;
 
-#ifdef BINARY_CODE
-		printf("Binary : ");
-		for (i = 15; i >= 0; i--)
-		{
-			printf("%d", button >> i & 0x1);
-		}
-		printf("\n");
-#endif
+//#ifdef BINARY_CODE
+//		printf("Binary : ");
+//		for (i = 15; i >= 0; i--)
+//		{
+//			printf("%d", button >> i & 0x1);
+//		}
+//		printf("\n");
+//#endif
 		usleep(1000);
         pthread_mutex_unlock(&keypad_mutex);
 

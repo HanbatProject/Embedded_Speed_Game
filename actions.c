@@ -4,6 +4,7 @@
 #include "state.h"
 #include "text.h"
 extern char buf1[TEXTLCD_LENGTH], buf2[TEXTLCD_LENGTH];
+extern int ten_number, one_number;
 extern unsigned short button;
 extern int current_state;
 
@@ -49,6 +50,8 @@ void text_change(pthread_mutex_t current_state_mutex)
 {
     int i;
     char blank[TEXTLCD_LENGTH] = "  ";
+    strcpy(buf1, "                ");
+    strcpy(buf2, "                ");
     while(1) {
         pthread_mutex_lock(&current_state_mutex);
         switch (current_state) {
@@ -88,9 +91,17 @@ void text_change(pthread_mutex_t current_state_mutex)
         pthread_mutex_unlock(&current_state_mutex);
     }
 }
-void score_change()
+void score_change(pthread_mutex_t print_text_mutex)
 {
+    int score;
+    if (current_state == 2)
+    {
+        pthread_mutex_lock(&print_text_mutex);
+        score = ten_number*10 + one_number;
+        score = score - 1;
 
+        pthread_mutex_lock(&print_text_mutex);
+    }
 }
 void time_change();
 void next_question();
