@@ -18,6 +18,8 @@ int set_ddram_address(int pos);
 
 unsigned short *pTextlcd;
 
+// #define LINE_TEST
+
 void print_text(pthread_mutex_t print_text_mutex)
 {
 	pTextlcd = addr_fpga + TEXTLCD_OFFSET / sizeof(unsigned short);
@@ -46,6 +48,7 @@ void make_line(int line_bit, char* buf)
 	int i;
 	set_ddram_address(line_bit);
 
+#ifdef LINE_TEST
 	if(line_bit == 0) printf("\nLINE 1 : ");
 	else printf("\nLINE 2 : ");
 	for (i = 0; i < TEXTLCD_LENGTH; i++)
@@ -54,6 +57,7 @@ void make_line(int line_bit, char* buf)
 		writebyte(buf[i]);
 	}
 	printf("\n");
+#endif
 }
 
 void setcommand(unsigned short command)
