@@ -49,9 +49,7 @@ void state_change(pthread_mutex_t current_state_mutex)
 void text_change(pthread_mutex_t current_state_mutex)
 {
     int i;
-    char blank[TEXTLCD_LENGTH] = "  ";
-    strcpy(buf1, "                ");
-    strcpy(buf2, "                ");
+    char temp[TEXTLCD_LENGTH];
     while(1) {
         pthread_mutex_lock(&current_state_mutex);
         switch (current_state) {
@@ -63,14 +61,16 @@ void text_change(pthread_mutex_t current_state_mutex)
             case 1:
                 for (i = 3; i > 0; i--)
                 {
-                    strcat(blank, (char *) &i);
-                    strcpy(buf1, blank);
-                    usleep(500 * 1000);
-                    strcpy(blank, "  ");
+                    strcpy(temp, "        ");
+                    strcat(temp, (char *) &i);
+                    strcat(temp, "        ");
+
+                    strcpy(buf1, temp);
+                    usleep(1000 * 1000);
                 }
                 strcpy(buf1, START_LINE1);
                 usleep(1000 * 1000);
-                current_state = 2;
+                current_state = 0;
 
                 break;
                 // 게임 진행 상태
