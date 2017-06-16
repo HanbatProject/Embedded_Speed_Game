@@ -1,6 +1,6 @@
-CC	= arm-linux-gcc                  # 컴파일러 이름
+CC	= arm-linux-gcc            # 컴파일러 이름
 CFLAGS	= -O2                  # 컴파일러 옵션
-LDFLAGS = -lpthread           # 참조 라이브러리
+LDFLAGS = -lpthread            # 참조 라이브러리
 
 all : speed_game    # 타겟 정의(내가 만들고자 하는 파일명)
 
