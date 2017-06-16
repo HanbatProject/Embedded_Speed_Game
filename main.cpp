@@ -28,7 +28,7 @@ int main()
 
     // 기계 쓰레드
 	pthread_create(&print_text_t, NULL, print_text_thread, NULL);
-	pthread_create(&keypad_t, NULL, keypad_thread, NULL;
+	pthread_create(&keypad_t, NULL, keypad_thread, NULL);
 	pthread_create(&dot_matrix_t, NULL, dot_matrix_thread, NULL);
 
 	// 동작 쓰레드
@@ -53,17 +53,17 @@ int main()
 // 기계 콜백 함수
 void *print_text_thread(void *arg)
 {
-	print("print_text_thread start!");
+	printf("print_text_thread start!");
 	print_text();
 }
 void *keypad_thread(void *arg)
 {
-	print("keypad_thread start!");
+    printf("keypad_thread start!");
 	keypad();
 }
 void *dot_matrix_thread(void *arg)
 {
-	print("dot_matrix_thread start!");
+    printf("dot_matrix_thread start!");
 	dot_matrix();
 }
 
@@ -84,11 +84,11 @@ void *formula_thread(void *arg)
 void unset_memory(int fd)
 {
 	munmap(addr_fpga, 4096);
-	munmap(pTextlcd, 4096);
-	munmap(dot_row_addr, 4096);
-	munmap(dot_col_addr, 4096);
-	munmap(keypad_row_addr, 4096);
-	munmap(keypad_col_addr, 4096);
+//	munmap(pTextlcd, 4096);
+//	munmap(dot_row_addr, 4096);
+//	munmap(dot_col_addr, 4096);
+//	munmap(keypad_row_addr, 4096);
+//	munmap(keypad_col_addr, 4096);
 
     pthread_mutex_destroy(&PRINT_TEXT_MUTEX);
     pthread_mutex_destroy(&KEYPAD_MUTEX);
