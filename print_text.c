@@ -52,7 +52,7 @@ void make_line(int line_bit, char* buf)
 		printf("%c", buf[i]);
 		writebyte(buf[i]);
 	}
-	printf("\n")
+	printf("\n");
 }
 
 void setcommand(unsigned short command)
