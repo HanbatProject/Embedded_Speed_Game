@@ -278,3 +278,102 @@ void itoa(int num, char * str, int radix)
 	
 	*p = '\0';
 }
+
+void next_question(pthread_mutex_t print_text_mutex)
+{
+	question_count = 1;
+	int i;
+	int difficulty = 10;
+	int left_num = 0, right_num = 0;
+	char char_left_num[1], char_operation[1], char_right_num[1];
+	char* operation[4] = ["+", "-", "/", "*"];
+	char result[10];
+	
+	while (1)
+	{
+		if (current_state == STATE_GAME && is_correct > ANS_NOTHING)
+		{
+			strcpy(formula, "");
+			strcpy(char_left_num, "");
+			strcpy(char_operation, "");
+			strcpy(char_right_num, "");
+			strcpy(result, "");
+			srand(time(NULL));
+			pthread_mutex_lock(&print_text_mutex);
+			
+			// ************* 다음 문제를 내는 메소드임 *****************
+			// 일단 랜덤하게 생성하는 함수로 int를 생성한 뒤
+			left_num = rand() % difficulty;
+			right_num = rand() % difficulty;
+			strcpy(char_operation, operation[(int)((rand() % 10) / 5)]);
+			// 이거에 대한 답이 answer에 들어가야함
+			// 오퍼레이션에 따라 달라야겠지?
+			// answer는 int형임
+			if (char_operation == "+")
+				answer = left_num + right_num;
+			else if (char_operation == "-")
+			{
+				answer = left_num - right_num;
+				while (1)
+				{
+					if (left_num >= right_num) break;
+					left_num = rand() % difficulty;
+					right_num = rand() % difficulty;
+				}
+			}
+			else if (char_operation == "*")
+				answer = left_num * right_num;
+			else
+			{
+				answer = left_num / right_num;
+				while (1)
+				{
+					if (left_num%right_num == 0) break;
+					left_num = rand() % difficulty;
+					right_num = rand() % difficulty;
+				}
+			}
+
+			// itoa는 인트값을 문자열로 바꿔주는 함수
+
+			itoa(left_num, char_left_num, 10);
+			itoa(right_num, char_right_num, 10);
+
+			// strcpy는 문자열을 첫번째 인자에 넣어주는 함수
+
+			strcpy(char_left_num, left_num);
+			strcpy(char_right_num, right_num);
+
+			// strcat은 붙이는 함수
+			strcat(result, char_left_num);
+			strcat(result, char_operation);
+			strcat(result, char_left_num);
+
+			// 위 과정을 거치면 result에 "3+5" 라는 식이 들어감(물론 숫자와 연산자 모두 랜덤)
+			// 이제 식 만든 result를 formula 에 식이 들어가게 하면됨 예를 들면
+			strcpy(formula, result);
+			// **** 이렇게 formula와 answer에 값이 들어가도록 하면 끝임 ****
+
+			// 갈수록 난이도도 높게 설정해야겠지?
+
+			// 횟수는 question_count임 (인트형)
+
+			if (question_count > 3)
+				difficulty = 50; // 두자리숫자까지 나온다는거
+			if (question_count > 7)
+				difficulty = 100;
+			if (question_count > 12)
+				difficulty = 250;
+			if (question_count > 18)
+				difficulty = 500;
+			if (question_count > 25)
+				difficulty = 750;
+			if (question_count > 33)
+				difficulty = 1000;
+			// 난이도를 앞에다 설정해도됨
+
+
+			pthread_mutex_unlock(&print_text_mutex);
+		}
+	}
+}
