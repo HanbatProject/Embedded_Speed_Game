@@ -15,4 +15,7 @@ void when_score_change(pthread_mutex_t);
 void time_change(pthread_mutex_t);
 void next_question();
 
+// 유틸 함수들
+void itoa(int num, char * str, int radix);
+
 #endif // !FUNCTIONS_H

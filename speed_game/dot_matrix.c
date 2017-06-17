@@ -36,37 +36,37 @@ void dot_matrix(pthread_mutex_t dot_matrix_mutex)
 	}
 	while(1)
 	{
-		if (current_state == 2)
+		if (current_state == STATE_GAME)
 		{
 			dot_dirty = 1;
 			pthread_mutex_lock(&dot_matrix_mutex);
 
-			for (i = 0; i < 4; i++)
+			while (1)
 			{
-				*dot_row_addr = 1 << i;
-				*dot_col_addr = 0x8000 | font_num[ten_number*NUMSIZE + i];
-			}
-			for (i = 0; i < 4; i++)
-			{
-				*dot_row_addr = 5 << i;
-				*dot_col_addr = 0x8000 | font_num[one_number*NUMSIZE + i];
+				for (i = 0; i < 4; i++)
+				{
+					*dot_row_addr = 1 << i;
+					*dot_col_addr = 0x8000 | font_num[ten_number*NUMSIZE + i];
+				}
+				for (i = 0; i < 4; i++)
+				{
+					*dot_row_addr = 5 << i;
+					*dot_col_addr = 0x8000 | font_num[one_number*NUMSIZE + i];
+				}
 			}
 			pthread_mutex_unlock(&dot_matrix_mutex);
 			usleep(1000 * 1000);
 		}
-		else
+		else if (current_state != STATE_GAME && dot_dirty)
 		{
-			if (dot_dirty)
+			pthread_mutex_lock(&dot_matrix_mutex);
+			for (i = 0; i < 8; i++)
 			{
-				pthread_mutex_lock(&dot_matrix_mutex);
-				for (i = 0; i < 8; i++)
-				{
-					*dot_row_addr = 1 << i;
-					*dot_col_addr = 0x00;
-				}
-				dot_dirty = 0;
-				pthread_mutex_unlock(&dot_matrix_mutex);
+				*dot_row_addr = 1 << i;
+				*dot_col_addr = 0x00;
 			}
+			dot_dirty = 0;
+			pthread_mutex_unlock(&dot_matrix_mutex);
 		}
 	}
 	return;

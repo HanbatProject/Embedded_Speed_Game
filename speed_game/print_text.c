@@ -38,7 +38,7 @@ void print_text(pthread_mutex_t print_text_mutex)
 		make_line(64, buf2);
 
         pthread_mutex_unlock(&print_text_mutex);
-        usleep(100);
+        usleep(1000);
 	}
 	return;
 }

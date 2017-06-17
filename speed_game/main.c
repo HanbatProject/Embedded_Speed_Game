@@ -18,6 +18,7 @@ int main()
 	int fd;
 	pthread_t print_text_t, keypad_t, dot_matrix_t, formula_t;
 	pthread_t state_change_t, text_change_t, score_change_t, time_change_t;
+	pthread_t key_input_t;
 
 	if ((fd = open(MEMORY_PATH, O_RDWR | O_SYNC)) < 0)
 	{
@@ -44,6 +45,7 @@ int main()
 	pthread_create(&text_change_t, NULL, text_change_thread, NULL);
 	pthread_create(&score_change_t, NULL, score_change_thread, NULL);
 	pthread_create(&time_change_t, NULL, time_change_thread, NULL);
+	pthread_create(&key_input_t, NULL, key_input_thread, NULL);
 	//pthread_create(&formula_t, NULL, formula_thread, NULL);
 
 
@@ -53,7 +55,11 @@ int main()
 	pthread_join(dot_matrix_t, NULL);
 
 	// 동작 쓰레드
+	pthread_join(state_change_t, NULL);
 	pthread_join(text_change_t, NULL);
+	pthread_join(score_change_t, NULL);
+	pthread_join(time_change_t, NULL);
+	pthread_join(key_input_t, NULL);
 	//pthread_join(formula_t, NULL);
 
 	unset_memory(fd);
@@ -80,19 +86,28 @@ void *dot_matrix_thread(void *arg)
 // 동작 콜백 함수
 void *state_change_thread(void *arg)
 {
+	printf("state_chanage_start");
     state_change(CURRENT_STATE_MUTEX);
 }
 void *text_change_thread(void *arg)
 {
+	printf("text_chanage_start");
     text_change(PRINT_TEXT_MUTEX);
 }
 void *score_change_thread(void *arg)
 {
+	printf("score_chanage_start");
 	when_score_change(PRINT_TEXT_MUTEX);
 }
 void *time_change_thread(void *arg)
 {
+	printf("time_chanage_start");
 	time_change(DOT_MATRIX_MUTEX);
+}
+void *key_input_thread(void *arg)
+{
+	printf("key_input_start");
+	key_input(PRINT_TEXT_MUTEX);
 }
 void *formula_thread(void *arg)
 {

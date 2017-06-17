@@ -1,4 +1,4 @@
-CC	= gcc            # 컴파일러 이름
+CC	= arm-linux-gcc            # 컴파일러 이름
 CFLAGS	= -O2                  # 컴파일러 옵션
 LDFLAGS = -lpthread            # 참조 라이브러리
 
