@@ -1,5 +1,6 @@
 #include "machine.h"
 #include "state.h"
+#include "text.h"
 
 unsigned short *addr_fpga = 0;
 char buf1[TEXTLCD_LENGTH] = BLANK, buf2[TEXTLCD_LENGTH] = BLANK;

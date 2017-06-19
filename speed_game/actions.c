@@ -6,13 +6,15 @@
 
 void state_change(pthread_mutex_t current_state_mutex)
 {
+	int i;
     while(1) {
+		printf("\n");
 		//pthread_mutex_lock(&current_state_mutex);
         switch (current_state) {
             // 게임 시작 상태
             case STATE_MAIN:
 				if (button > 0x00)
-					current_state = STATE_GAME;
+					current_state = STATE_READY;
                 break;
             // 게임 준비 상태
             case STATE_READY:
@@ -47,12 +49,13 @@ void text_change(pthread_mutex_t print_text_mutex)
 	int game_change_ok = 0;
 	char print_high_score[10];
 	char char_answer[10], char_game_score[10];
-    char temp[TEXTLCD_LENGTH];
+    char temp[1];
     while(1) {
 		//pthread_mutex_lock(&print_text_mutex);
         switch (current_state) {
             // 게임 시작 상태
             case STATE_MAIN:
+				printf("\n");
 				if (!main_change_ok)
 				{
 					strcpy(buf1, GAME_START_LINE1);
@@ -68,6 +71,8 @@ void text_change(pthread_mutex_t print_text_mutex)
                 break;
 			// 게임 준비 상태
             case STATE_READY:
+				printf("\n");
+				strcpy(buf2, BLANK);
 				for (i = 3; i > 0; i--)
 				{
 					strcpy(temp, HALF_BLANK);
@@ -78,35 +83,51 @@ void text_change(pthread_mutex_t print_text_mutex)
 
 					strcpy(buf1, temp);
 					usleep(1000 * 1000);
-					if (current_state == STATE_MAIN) break;
+					if (current_state == STATE_MAIN) {
+						main_change_ok = 0;
+						break;
+					}
 				}
-				if (current_state == STATE_MAIN) break;
+				if (current_state == STATE_MAIN) {
+					main_change_ok = 0;
+					break;
+				}
 				strcpy(buf1, START_LINE1);
 				usleep(1000 * 1000);
-				if (current_state == STATE_MAIN) break;
+				if (current_state == STATE_MAIN) {
+					main_change_ok = 0;
+					break;
+				}
 
 				current_state = STATE_GAME;
+				next_question();
 				strcpy(buf1, BLANK);
 				strcpy(buf2, BLANK);
                 break;
             // 게임 진행 상태
             case STATE_GAME:
+				printf("\n");
+				strcpy(buf1, BLANK);
+				strcpy(buf2, BLANK);
+
 				strcpy(buf1, formula);
 				strcat(buf1, GAME_LINE1);
-				//strcpy(char_answer, "11");
+
 				itoa(answer_input, char_answer, 10);
 				strcat(buf1, char_answer);
 
 				itoa(game_score, char_game_score, 10);
-				//strcpy(char_game_score, "11111");
 				strcpy(buf2, GAME_LINE2);
 				strcat(buf2, char_game_score);
                 break;
             // 게임 오버 상태
             case STATE_GAME_OVER:
+				printf("\n");
 				strcpy(buf1, GAME_OVER_LINE1);
+
 				main_change_ok = 0;
 				game_change_ok = 0;
+				change_time(30);
                 break;
             default:
                 strcpy(buf1, BLANK);
@@ -116,52 +137,15 @@ void text_change(pthread_mutex_t print_text_mutex)
     }
 }
 
-void key_input(pthread_mutex_t print_text_mutex)
+void go_time()
 {
 	while (1)
 	{
+		printf("\n");
 		if (current_state == STATE_GAME)
 		{
-			//pthread_mutex_lock(&print_text_mutex);
-
-			if (button == KEY_ONE)
-				answer_input = 10 * answer_input + 1;
-			if (button == KEY_TWO)
-				answer_input = 10 * answer_input + 2;
-			if (button == KEY_THREE)
-				answer_input = 10 * answer_input + 3;
-			if(button == KEY_FOUR)
-				answer_input = 10 * answer_input + 4;
-			if (button == KEY_FIVE)
-				answer_input = 10 * answer_input + 5;
-			if (button == KEY_SIX)
-				answer_input = 10 * answer_input + 6;
-			if (button == KEY_SEVEN)
-				answer_input = 10 * answer_input + 7;
-			if (button == KEY_EIGHT)
-				answer_input = 10 * answer_input + 8;
-			if (button == KEY_NINE)
-				answer_input = 10 * answer_input + 9;
-			if (button == KEY_ZERO)
-				answer_input = 10 * answer_input;
-			if (button == KEY_BACK)
-				answer_input = 0;
-			if (button == KEY_NEXT)
-			{
-				// 답 체크하는 부분
-				if (answer == answer_input)
-				{
-					game_score += 10 * combo;
-				}
-				else
-				{
-					change_time(get_time() - 3);
-					combo = 1;
-				}
-				next_question();
-			}
-
-			//pthread_mutex_unlock(&print_text_mutex);
+			usleep(1000 * 1000);
+			change_time(get_time() - 1);
 		}
 	}
 }
@@ -172,12 +156,12 @@ void next_question()
 	int difficulty = 10;
 	int left_num = 0, right_num = 0;
 	char char_left_num[5] = "", char_operation[1] = "", char_right_num[5] = "";
-	char* operation[4] = ["+", "-", "/", "*"];
+	char* operation[4] = { "+", "-", "/", "*" };
 	char result[10] = "";
 
 	srand(time(NULL));
-	left_num = rand() % difficulty;
-	right_num = rand() % difficulty;
+	left_num = (int)(rand() % difficulty + 1);
+	right_num = (int)(rand() % difficulty + 1);
 	strcpy(char_operation, operation[(int)((rand() % 10) / 5)]);
 	if (char_operation == "+")
 		answer = left_num + right_num;
@@ -185,8 +169,8 @@ void next_question()
 	{
 		while (left_num < right_num)
 		{
-			left_num = rand() % difficulty;
-			right_num = rand() % difficulty;
+			left_num = (int)(rand() % difficulty);
+			right_num = (int)(rand() % difficulty);
 		}
 		answer = left_num - right_num;
 	}
@@ -196,8 +180,8 @@ void next_question()
 	{
 		while (left_num%right_num)
 		{
-			left_num = rand() % difficulty;
-			right_num = rand() % difficulty;
+			left_num = (int)(rand() % difficulty);
+			right_num = (int)(rand() % difficulty);
 		}
 		answer = left_num / right_num;
 	}
@@ -210,6 +194,8 @@ void next_question()
 	strcat(result, char_right_num);
 
 	strcpy(formula, result);
+
+	answer_input = 0;
 
 	if (question_count > 3) difficulty = 50;
 	else if (question_count > 7) difficulty = 100;
@@ -235,21 +221,43 @@ void itoa(int num, char * str, int radix)
 	int deg = 1;
 	int cnt = 0;
 
-	char* p = str;
+	if (num == 0)
+	{
+		strcpy(str, "0");
+		return;
+	}
+
+	char temp[10] = "";
+	int k;
+
+	//strcpy(str, "");
 	while (num)
 	{
-		if (radix <= 10)
-			*p++ = (num % radix) + '0';
-		else {
-			int t = num % radix;
-			if (t <= 9)
-				*p++ = t + '0';
-			else
-				*p++ = t - 10 + 'a';
-		}
-		
-		num /= radix;
+		k = num % radix;
+		if (k == 0)
+			strcat(temp, "0");
+		else if (k == 1)
+			strcat(temp, "1");
+		else if (k == 2)
+			strcat(temp, "2");
+		else if (k == 3)
+			strcat(temp, "3");
+		else if (k == 4)
+			strcat(temp, "4");
+		else if (k == 5)
+			strcat(temp, "5");
+		else if (k == 6)
+			strcat(temp, "6");
+		else if (k == 7)
+			strcat(temp, "7");
+		else if (k == 8)
+			strcat(temp, "8");
+		else if (k == 9)
+			strcat(temp, "9");
+		if (num == 0) break;
+		num = (int)(num / radix);
+		k = num % radix;
 	}
-	
-	*p = '\0';
+	strcpy(str, temp);
+	strcat(str, "\0");
 }

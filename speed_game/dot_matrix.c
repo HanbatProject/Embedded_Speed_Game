@@ -20,8 +20,7 @@ unsigned short font_num[40] = {
 
 void dot_matrix(pthread_mutex_t dot_matrix_mutex)
 {
-	int i, dot_dirty = 1;
-	int temp_time;
+	int i;
 
 	unsigned short *dot_row_addr, *dot_col_addr;
 	dot_row_addr = addr_fpga + DOT_ROW_OFFSET / sizeof(unsigned short);
@@ -34,38 +33,44 @@ void dot_matrix(pthread_mutex_t dot_matrix_mutex)
 	}
 	while(1)
 	{
+		printf("\n");
 		if (current_state == STATE_GAME)
 		{
-			dot_dirty = 1;
 			//pthread_mutex_lock(&dot_matrix_mutex);
 			while (get_time() != 0)
 			{
-				temp_time = get_time();
-				while (temp_time == get_time())
+				while (1)
 				{
 					for (i = 0; i < 4; i++)
 					{
 						*dot_row_addr = 1 << i;
 						*dot_col_addr = 0x8000 | font_num[ten_number*NUMSIZE + i];
-						*dot_row_addr = 5 << i;
+						usleep(300);
+					}
+
+					for (i = 0; i < 4; i++)
+					{
+						*dot_row_addr = 0b100000 << i;
 						*dot_col_addr = 0x8000 | font_num[one_number*NUMSIZE + i];
+						usleep(300);
 					}
 				}
-				usleep(1000 * 1000);
-				change_time(get_time());
 			}
 			//pthread_mutex_unlock(&dot_matrix_mutex);
 		}
-		else if (current_state != STATE_GAME && dot_dirty)
+		else
 		{
 			//pthread_mutex_lock(&dot_matrix_mutex);
-			change_time(30);
-			for (i = 0; i < 8; i++)
+			for (i = 0; i < 4; i++)
 			{
 				*dot_row_addr = 1 << i;
-				*dot_col_addr = 0x00;
+				*dot_col_addr = 0x8000 | 0x00;
 			}
-			dot_dirty = 0;
+			for (i = 0; i < 4; i++)
+			{
+				*dot_row_addr = 0b100000 << i;
+				*dot_col_addr = 0x8000 | 0x00;
+			}
 			//pthread_mutex_unlock(&dot_matrix_mutex);
 		}
 	}
