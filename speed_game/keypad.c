@@ -19,11 +19,9 @@ void keypad(pthread_mutex_t print_text_mutex)
 		return;
 	}
 
-	int i;
     *keypad_row_addr = 0x00;
 	while (1)
 	{
-		pthread_mutex_lock(&print_text_mutex);
 		button = keypad_change(0x01);
 		button |= keypad_change(0x02) << 4;
 		button |= keypad_change(0x04) << 8;
@@ -35,10 +33,8 @@ void keypad(pthread_mutex_t print_text_mutex)
 			printf("%d", button >> i & 0x1);
 		printf("\n");
 #endif
-		pthread_mutex_unlock(&print_text_mutex);
-		usleep(500*1000);
+		usleep(100*1000);
 		*keypad_row_addr = 0x00;
-
 		if (current_state == STATE_GAME)
 		{
 			if (button == KEY_ONE)
@@ -66,15 +62,12 @@ void keypad(pthread_mutex_t print_text_mutex)
 			if (button == KEY_NEXT)
 			{
 				// 답 체크하는 부분
+				printf("%d, %d \n", answer, answer_input);
 				if (answer == answer_input)
 				{
-					game_score += 10 * combo;
+					game_score += 10 * combo++;
 				}
-				else
-				{
-					change_time(get_time() - 3);
-					combo = 1;
-				}
+					//change_time(get_time() - 3);
 				next_question();
 			}
 		}

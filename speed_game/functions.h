@@ -18,5 +18,6 @@ void next_question();
 int get_time();
 void change_time(int time);
 void itoa(int num, char * str, int radix);
+int clear_display();
 
 #endif // !FUNCTIONS_H

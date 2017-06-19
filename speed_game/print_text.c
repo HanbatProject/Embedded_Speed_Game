@@ -45,7 +45,7 @@ void make_line(int line_bit, char* buf)
 {
 	int i;
 	set_ddram_address(line_bit);
-	for (i = 0; i < TEXTLCD_LENGTH; i++)
+	for (i = 0; i < TEXTLCD_LENGTH-1; i++)
 		writebyte(buf[i]);
 #ifdef LINE_TEST
 	if(line_bit == 0) printf("\nLINE 1 : ");

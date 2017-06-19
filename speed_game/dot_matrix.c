@@ -33,7 +33,7 @@ void dot_matrix(pthread_mutex_t dot_matrix_mutex)
 	}
 	while(1)
 	{
-		printf("\n");
+		usleep(1);//printf("\n");
 		if (current_state == STATE_GAME)
 		{
 			//pthread_mutex_lock(&dot_matrix_mutex);
@@ -45,14 +45,14 @@ void dot_matrix(pthread_mutex_t dot_matrix_mutex)
 					{
 						*dot_row_addr = 1 << i;
 						*dot_col_addr = 0x8000 | font_num[ten_number*NUMSIZE + i];
-						usleep(300);
+						usleep(200);
 					}
 
 					for (i = 0; i < 4; i++)
 					{
 						*dot_row_addr = 0b100000 << i;
 						*dot_col_addr = 0x8000 | font_num[one_number*NUMSIZE + i];
-						usleep(300);
+						usleep(200);
 					}
 				}
 			}
