@@ -25,6 +25,7 @@
   <ItemGroup>
     <ClCompile Include="speed_game\actions.c" />
     <ClCompile Include="speed_game\dot_matrix.c" />
+    <ClCompile Include="speed_game\init_extern.c" />
     <ClCompile Include="speed_game\keypad.c" />
     <ClCompile Include="speed_game\main.c" />
     <ClCompile Include="speed_game\print_text.c" />

@@ -8,7 +8,6 @@ void *dot_matrix_thread(void *arg);
 void *state_change_thread(void *arg);
 void *text_change_thread(void *arg);
 void *score_change_thread(void *arg);
-void *time_change_thread(void *arg);
 void *key_input_thread(void *arg);
 
 void *formula_thread(void *arg);

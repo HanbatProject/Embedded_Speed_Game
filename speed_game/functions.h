@@ -11,11 +11,12 @@ void keypad(pthread_mutex_t);
 // 상태에 따른 변수 변경 함수들
 void state_change(pthread_mutex_t);
 void text_change(pthread_mutex_t);
-void when_score_change(pthread_mutex_t);
-void time_change(pthread_mutex_t);
+void key_input(pthread_mutex_t);
 void next_question();
 
 // 유틸 함수들
+int get_time();
+void change_time(int time);
 void itoa(int num, char * str, int radix);
 
 #endif // !FUNCTIONS_H

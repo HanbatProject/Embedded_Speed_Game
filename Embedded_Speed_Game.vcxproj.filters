@@ -41,6 +41,9 @@
     <ClCompile Include="speed_game\actions.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="speed_game\init_extern.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="speed_game\thread_functions.h">

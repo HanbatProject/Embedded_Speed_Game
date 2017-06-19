@@ -1,8 +1,6 @@
 #include "external_includes.h"
 #include "functions.h"
 #include "machine.h"
-extern unsigned short *addr_fpga;
-extern char buf1[TEXTLCD_LENGTH], buf2[TEXTLCD_LENGTH];
 
 void make_line(int line_bit, char* buf);
 void setcommand(unsigned short command);
@@ -32,13 +30,13 @@ void print_text(pthread_mutex_t print_text_mutex)
 
 	initialize_textlcd();
 	while (1){
-        pthread_mutex_lock(&print_text_mutex);
+		// pthread_mutex_lock(&print_text_mutex);
 
 		make_line(0, buf1);
 		make_line(64, buf2);
 
-        pthread_mutex_unlock(&print_text_mutex);
-        usleep(1000);
+		// pthread_mutex_unlock(&print_text_mutex);
+		usleep(1000);
 	}
 	return;
 }
